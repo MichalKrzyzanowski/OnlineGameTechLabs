@@ -55,7 +55,7 @@ Practical Subnetting 4
 ----------------------
 
 Address class: B
-Custom subnet mask: `255.255.240.0
+Custom subnet mask: 255.255.240.0
 Minimum number of subnets needed: 5
 Extra subnets required for 70% growth: + 4
 Total number of subnets needed: = 9
