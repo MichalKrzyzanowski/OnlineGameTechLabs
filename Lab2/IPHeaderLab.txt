@@ -1,0 +1,16 @@
+IP Header
+---------
+
+Version: 0100 (4)
+Header length: 0101 (5)
+Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+Total Length: 40
+Identification: 0x06fe (1790)
+Flags: 0x40 don't fragment
+Fragment offset: 0
+Time to Live: 128
+Protocol: TCP (6)
+Checksum: 0x0000 [Validation disabled]
+Checksum status: Unverified
+Source address: 149.153.106.110
+Destination address: 149.153.31.110
