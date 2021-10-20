@@ -1,3 +1,6 @@
+Q.3
+---
+
 IP Header
 ---------
 
@@ -14,3 +17,38 @@ Checksum: 0x0000 [Validation disabled]
 Checksum status: Unverified
 Source address: 149.153.106.110
 Destination address: 149.153.31.110
+
+
+Q.4
+---
+Version: A 4 bit field that identifies the IP version being used
+
+Length: A 4 bit field containing the length of the IP header in 32 bit increments.
+
+Differentiated Services Field (DSCP): A 6 bit field used to identify the level of service a packet recieves in the network.
+
+Total Length: total length of the packet, including the IP header and user data.
+
+Identification: used to identify the packet as is gets fragmented.
+
+Flags: options to be used when fragmenting.
+
+Fragment Offset: used to identify the sequence of fragments in each frame
+
+Time to live: length of time the packet will live for if there is a routing problem and the packet fails to reach its destination.
+
+Protocol: protocol layer to be used
+
+Checksum: value calculated based on the contents of the IP header.
+
+Checksum status: used to detect corruption in the IP header.
+
+Source address: address of sender.
+
+Destination address: address of recipient.
+
+
+Q.5
+---
+It is using the ICMP prototype in comparison to the TCP protocol of my IP header.
+It also has flags set to 'more fragments' as opposed to 'don't fragment'.
