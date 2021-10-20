@@ -47,6 +47,10 @@ Source address: address of sender.
 
 Destination address: address of recipient.
 
+Options: optional header settings mainly used for testing, and debugging.
+
+Data: data of the packet being sent to the recipient from the sender.
+
 
 Q.5
 ---
