@@ -1,0 +1,79 @@
+Q.1
+---
+
+TCP Header
+----------
+Source Port: 8080
+Destination Port: 54082
+Stream Index: 0
+TCP Segment Length: 51
+Sequence Number: 1 (relative sequence number)
+Sequence Number Raw: 3492776503
+Next Sequence Number: 52 (relative sequence number)
+Acknowledgement Number: 1 (relative ack number)
+Acknowledgement Number Raw: 2495021060
+Header Length: 20 bytes (5)
+Flags: 0x018 (PSH, ACK)
+Window: 513
+Window Size Scaling Factor: -1 (Unknown)
+Checksum: 0x86f8
+Checksum status: unverified
+Urgent Pointer: 0
+Payload: 51 bytes
+
+SEQ/ACK Analysis:
+Bytes in flight: 51
+Bytes sent since last PSH flag: 51
+
+Explanations
+------------
+Source Port: 16 bit number, identifies the source port number.
+Destination Port: 16 bit number, identifies the destination port number.
+Sequence number: 32 bit number used for byte level numbering of TCP segments.
+Acknowledgement Number: 32 bit number field which indicates the next sequence number that the sending device is expecting from the other device.
+Header Length: 4 bit field which shows the number of 32 bit words in the header.
+Flags: controls the entire process of connection establishement, data transmission, and connection termination.
+ACK flag: Acknowledgement.
+PSH flag: push function. data from a sending application will be pushed immediately without waiting to fill the segment.
+Window: size of the recieve window.
+Checksum: 16 bit field, used for error checking.
+Urgent Pointer: shows the end of the urgent data so that interrupted data streams can continue.
+Payload: data being sent.
+
+
+Q.2
+---
+
+UDP Header
+----------
+Source Port: 54915
+Destination Port: 54915
+Length: 271
+Checksum: 0xfd33
+Checksum status: unverified
+Stream index: 0
+Payload: 263 bytes
+
+Explanations
+------------
+Source Port: 16 bit number, identifies the source port number.
+Destination Port: 16 bit number, identifies the destination port number.
+Length: length of the UDP header.
+Checksum: 16 bit field, used for error checking.
+Payload: data being sent.
+
+Q.3
+---
+UDP Packet Len: 16 bytes
+UDP Packet Checksum: 0xa520
+
+Q.4
+---
+
+
+Q.5
+---
+
+
+Q.6
+---
