@@ -64,16 +64,149 @@ Payload: data being sent.
 
 Q.3
 ---
-UDP Packet Len: 16 bytes
-UDP Packet Checksum: 0xa520
+
+source ip first: C0 A8 (1100 0000 1010 1000)
+source ip last: 00 65 (0000 0000 0110 0101)
+
+dest ip first: C0 A8 (1100 0000 1010 1000)
+dest ip last: 00 0A (0000 0000 0000 1010)
+
+protocol: 11 00 (0001 0001 0000 0000)
+
+source port: C2 F1 (1100 0010 1111 0001)
+dest port: 13 E7 (0001 0011 1110 0111)
+
+len: 00 10 (0000 0000 0001 0000)
+checksum: B9 09 (1011 1001 0000 1001)
+
+data:
+01 00 (0000 0001 0000 0000)
+01 00 (0000 0001 0000 0000)
+00 0D (0000 0000 0000 1101)
+00 08 (0000 0000 0000 1000)
+
+Verification
+------------
+
+1100 0000 1010 1000
+0000 0000 0110 0101
+-------------------
+1100 0001 0000 1101 (source ip)
+
+1100 0000 1010 1000
+0000 0000 0000 1010
+-------------------
+1100 0000 1011 0010 (dest ip)
+
+1100 0001 0000 1101
+1100 0000 1011 0010
+-------------------
+0001 1000 0001 1011 1111 (source + dest ip)
+
+1000 0001 1011 1111
+0000 0000 0000 0001
+-------------------
+1000 0001 1100 0000 (one compliment addition of sum)
+
+1000 0001 1100 0000
+0001 0001 0000 0000
+-------------------
+1001 0010 1100 0000 (sum + protocol)
+
+
+1001 0010 1100 0000 
+0000 0000 0001 0000
+-------------------
+1001 0010 1101 0000 (sum + len)
+
+1001 0010 1101 0000
+1100 0010 1111 0001
+-------------------
+0001 0101 0101 1100 0001 (sum + source port)
+
+0001 0101 0101 1100
+0000 0000 0000 0001
+-------------------
+0001 0101 0101 1101 (one compliment addition of sum)
+
+
+0001 0101 0101 1101
+0001 0011 1110 0111
+-------------------
+0010 1001 0100 0100 (sum + dest port)
+
+0010 1001 0100 0100
+0000 0000 0001 0000
+-------------------
+0010 1001 0101 0100 (sum + len)
+
+Data Addition
+-------------
+
+0010 1001 0101 0100
+0000 0001 0000 0000
+-------------------
+0010 1010 0101 0100
+0000 0001 0000 0000
+-------------------
+0010 1011 0101 0100
+0000 0000 0000 1101
+-------------------
+0010 1011 0110 0001
+0000 0000 0000 1000
+-------------------
+0010 1011 0110 1001 (sum + data)
+
+1101 0100 1001 0110 (reverse)
+
+checksum: B9 09 (1011 1001 0000 1001)
 
 Q.4
 ---
 
+Packets sent from youtube can be either UDP or TCP. Standard videos use the TCP
+protocol and livestreams use UDP where real-time communication is crucial.
 
 Q.5
 ---
 
+three-way handshake is used to establish a reliable connection by exchanging
+the SYN, SYN-ACK, and ACK flags. Both sides synchronize (SYN) and acknowledge
+(ACK) eachother.
+
+flags: 0x012 (SYN, ACK)
+
+diagram
+-------
+
++--------+ SYN       +--------+
+|        |---------->|        |
+|        |           |        |
+|        | SYN/ACK   |        |
+| Client |<----------| Server |
+|        |           |        |
+|        | ACK       |        |
++--------+ --------> +--------+
 
 Q.6
 ---
+
+a tcp connection is terminated using a four-way handshape, with each side of
+the connection terminating independently. a FIN flag is used to signal the
+other end when the endpoint wishes to terminate, the other end sends out an ACK
+signal, acknowledging the termination.
+
+flags: 0x011 (FIN, ACK)
+
+diagram
+-------
+
++--------+ FIN       +--------+
+|        |---------->|        |
+|        |           |        |
+|        | FIN/ACK   |        |
+| Client |<----------| Server |
+|        |           |        |
+|        | ACK       |        |
++--------+ --------> +--------+
+
