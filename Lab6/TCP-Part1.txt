@@ -1,0 +1,68 @@
+Q.1
+---
+
+C. 435 
+
+Q.2
+---
+
+Yes
+
+Q.3
+---
+
+4. Whether it increases the timeout depends on the deviation.
+
+Q.4
+---
+
+smoothedRTT: 100ms
+devRTT: 8ms
+sampleRTT: 108ms
+
+new smoothRTT: (1 - 0.125) * 100 + 0.125 * 108 = 101ms
+new devRTT: (1 - 0.25) * 8 + 0.25 * (108 - 101) = 7.75ms
+
+timeout = 101 + 4 * 7.75 = 132ms
+
+Q.5
+---
+
+C. Flow Control
+
+Q.6
+---
+
+B. 1.5RTT
+
+Q.7
+---
+
+A. Per-byte sequence and ack numbers.
+
+Q.8
+---
+
+
+
+Q.9
+---
+
+HTTP
+TFTP
+FTP
+
+Q.10
+----
+
+C. 0.8 seconds
+
+Q.11
+----
+
+C. 4 seconds
+
+Q.12
+----
+
+B. 40 pkts/s
