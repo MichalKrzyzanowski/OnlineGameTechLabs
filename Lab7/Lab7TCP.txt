@@ -1,0 +1,55 @@
+Q.1
+---
+
+True
+
+Q.2
+---
+
+True
+
+Q.3
+---
+
+True
+
+Q.4
+---
+
+True
+
+Q.5
+---
+
+C. Packet loss
+
+Q.6
+---
+
+B. No
+
+Q.7
+---
+
+D. Timeout
+
+Q.8
+---
+
+B. No
+
+Q.9
+---
+
+B. Less
+
+Q.10
+----
+
+Slow start lowers network congestion and provides less interuptions in the
+connection (Less packets dropped due to congestion).
+
+Q.11
+----
+
+
