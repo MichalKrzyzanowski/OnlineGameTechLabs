@@ -1,137 +1,121 @@
 #include "../include/Game.h"
 
 Game::Game() :
-    m_gameIsRunning{ false }
+	m_player1{ Vector2f{100.0f, 100.0f}, 32 },
+	m_player2{ Vector2f{150.0f, 150.0f}, 32 },
+	m_gameIsRunning{ false }
 {
-    SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_VIDEO);
 
-    m_window = SDL_CreateWindow("SDL game loop", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
-    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	m_window = SDL_CreateWindow("SDL game loop", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
+	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-	struct sockaddr_in si_other;
-	int s, slen = sizeof(si_other);
-	char buf[BUFLEN];
-	char message[BUFLEN];
-	WSADATA wsa;
-
-	//Initialise winsock
-	printf("\nInitialising Winsock...");
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	if (SDLNet_Init() < 0)
 	{
-		printf("Failed. Error Code : %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
+		printf("SDLNet failed to init: %s\n", SDLNet_GetError());
 	}
-	printf("Initialised.\n");
 
-	//create socket
-	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
+	if (!(m_sock = SDLNet_UDP_Open(0)))
 	{
-		printf("socket() failed with error code : %d", WSAGetLastError());
+		printf("SDLNet failed to open socket: %s\n", SDLNet_GetError());
+	}
+
+	if (SDLNet_ResolveHost(&m_serverAddress, m_host, m_port))
+	{
+		printf("SDLNet SDLNet_ResolveHost(%s %d): %s\n", m_host, m_port, SDLNet_GetError());
 		exit(EXIT_FAILURE);
 	}
 
-	//setup address structure
-	memset((char*)&si_other, 0, sizeof(si_other));
-	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(PORT);
-	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
-
-	//start communication
-	while (1)
+	if (!(m_packet = SDLNet_AllocPacket(512)))
 	{
-		printf("Enter message : ");
-		gets_s(message);
-
-		//send the message
-		if (sendto(s, message, strlen(message), 0, (struct sockaddr*)&si_other, slen) == SOCKET_ERROR)
-		{
-			printf("sendto() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
-		}
-
-		//receive a reply and print it
-		//clear the buffer by filling null, it might have previously received data
-		memset(buf, '\0', BUFLEN);
-		//try to receive some data, this is a blocking call
-		if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr*)&si_other, &slen) == SOCKET_ERROR)
-		{
-			printf("recvfrom() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
-		}
-
-		puts(buf);
+		printf("SDLNet falied to allocate packet: %s\n", SDLNet_GetError());
 	}
-
-	closesocket(s);
-	WSACleanup();
 }
-    
+
 Game::~Game()
 {
-    cleanUp();
+	cleanUp();
 }
-    
+
 void Game::run()
 {
-    m_gameIsRunning = true;
-    SDL_Event e{};
+	m_gameIsRunning = true;
+	SDL_Event e{};
 
-    while (m_gameIsRunning)
-    {
-        processEvents(e);
-        update();
-        render();
-    }
+	while (m_gameIsRunning)
+	{
+		communication();
+		//processEvents(e);
+		//update();
+		//render();
+	}
 
-    cleanUp();
+	cleanUp();
 }
 
 void Game::processEvents(SDL_Event e)
 {
-    std::cout << "Processing Events" << std::endl;
+	// simple event loop
+	while (SDL_PollEvent(&e) != 0)
+	{
+		if (e.type == SDL_QUIT)
+		{
+			m_gameIsRunning = false;
+		}
 
-    // simple event loop
-    while (SDL_PollEvent(&e) != 0)
-    {
-        if (e.type == SDL_QUIT)
-        {
-            m_gameIsRunning = false;
-        }
+		// checks if the escape key is pressed down
+		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+		{
+			m_gameIsRunning = false;
+		}
 
-        // checks if the escape key is pressed down
-        if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
-        {
-            m_gameIsRunning = false;
-        }
-    }
-    
+		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d)
+		{
+			m_player1.move(2, 0);
+		}
+	}
+
 }
 
 void Game::update()
 {
-    std::cout << "Updating" << std::endl;
 }
 
 void Game::render()
 {
-    std::cout << "Rendering" << std::endl;
+	SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(m_renderer);
 
-    // render stuff here
+	m_player1.render(m_renderer);
+	m_player2.render(m_renderer);
 
-    SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderClear(m_renderer);
+	SDL_RenderPresent(m_renderer);
+}
+
+void Game::communication()
+{
+	printf("Fill the buffer\n");
+	scanf_s("%d", m_packet->data);
+
+	m_packet->address.host = m_serverAddress.host;
+	m_packet->address.port = m_serverAddress.port;
+	m_packet->len = strlen((char*)m_packet->data) + 1;
+	SDLNet_UDP_Send(m_sock, -1, m_packet);
+
+	if (!strcmp((char*)m_packet->data, "quit")) m_gameIsRunning = false;
 }
 
 void Game::cleanUp()
 {
-    std::cout << "Cleaning up" << std::endl;
-
-    SDL_DestroyRenderer(m_renderer);
+	SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);
-    m_window = nullptr;
-    m_renderer = nullptr;
+	m_window = nullptr;
+	m_renderer = nullptr;
 
-    SDL_Quit();
+	SDLNet_FreePacket(m_packet);
+	SDLNet_Quit();
+
+	SDL_Quit();
 }

@@ -2,15 +2,8 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include <WinSock2.h>
-
-#pragma comment(lib, "ws2_32.lib")
-
-#define SERVER "127.0.0.1"
-#define BUFLEN 512
-#define PORT 8888   
+#include <SDL_net.h>
+#include "Circle.h"
 
 class Game
 {
@@ -26,6 +19,7 @@ private:
     void update();
     void render();
 
+    void communication();
     void cleanUp();
 
     bool m_gameIsRunning;
@@ -33,4 +27,13 @@ private:
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
 
+    Circle m_player1;
+    Circle m_player2;
+
+    // network
+    char m_host[50] = "127.0.0.1";
+    int m_port{ 1234 };
+    UDPsocket m_sock;
+    IPaddress m_serverAddress;
+    UDPpacket* m_packet;
 };

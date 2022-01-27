@@ -1,82 +1,61 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include <WinSock2.h>
+#include <SDL_net.h>
 
-#pragma comment(lib, "ws2_32.lib")
-
-#define BUFLEN 512
-#define PORT 8888
-
-int main()
+int main(int argc, char** argv)
 {
-	SOCKET s;
-	struct sockaddr_in server, si_other;
-	int slen, recv_len;
-	char buf[BUFLEN];
-	WSADATA wsa;
+	UDPsocket socketDescriptor;
+	UDPpacket* packet;
+	bool successfullSetup{ true };
 
-	slen = sizeof(si_other);
-
-	//Initialise winsock
-	printf("\nInitialising Winsock...");
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	if (SDLNet_Init() < 0)
 	{
-		printf("Failed. Error Code : %d", WSAGetLastError());
+		printf("SDLNet init failed: %s\n", SDLNet_GetError());
+		successfullSetup = false;
+	}
+
+	if (!(socketDescriptor = SDLNet_UDP_Open(2000)))
+	{
+		printf("SDLNet failed to open socket: %s\n", SDLNet_GetError());
+		successfullSetup = false;
+	}
+
+	if (!(packet = SDLNet_AllocPacket(512)))
+	{
+		printf("SDLNet falied to allocate packet: %s\n", SDLNet_GetError());
+		successfullSetup = false;
+	}
+
+	if (successfullSetup)
+	{
+		printf("Server is running\n");
+	}
+	else
+	{
 		exit(EXIT_FAILURE);
 	}
-	printf("Initialised.\n");
 
-	//Create a socket
-	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET)
+	bool quit{ false };
+
+	while (!quit)
 	{
-		printf("Could not create socket : %d", WSAGetLastError());
-	}
-	printf("Socket created.\n");
-
-	//Prepare the sockaddr_in structure
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = htons(PORT);
-
-	//Bind
-	if (bind(s, (struct sockaddr*)&server, sizeof(server)) == SOCKET_ERROR)
-	{
-		printf("Bind failed with error code : %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
-	}
-	puts("Bind done");
-
-	//keep listening for data
-	while (1)
-	{
-		printf("Waiting for data...");
-		fflush(stdout);
-
-		//clear the buffer by filling null, it might have previously received data
-		memset(buf, '\0', BUFLEN);
-
-		//try to receive some data, this is a blocking call
-		if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr*)&si_other, &slen)) == SOCKET_ERROR)
+		if (SDLNet_UDP_Recv(socketDescriptor, packet))
 		{
-			printf("recvfrom() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
-		}
+			printf("Packet incoming\n");
+			printf("\tChan: %d\n", packet->channel);
+			printf("\tData: %s\n", (char*)packet->data);
+			printf("\Maxlen: %d\n", packet->maxlen);
+			printf("\Status: %d\n", packet->status);
+			printf("\Address: %x %x\n", packet->address.host, packet->address.port);
 
-		//print details of the client/peer and the data received
-		printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-		printf("Data: %s\n", buf);
-
-		//now reply the client with the same data
-		if (sendto(s, buf, recv_len, 0, (struct sockaddr*)&si_other, slen) == SOCKET_ERROR)
-		{
-			printf("sendto() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
+			if (!strcmp((char*)packet->data, "quit")) quit = true;
 		}
 	}
 
-	closesocket(s);
-	WSACleanup();
+	SDLNet_FreePacket(packet);
+	SDLNet_Quit();
 
 	return 0;
 }
