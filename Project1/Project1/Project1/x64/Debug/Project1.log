@@ -1,7 +1,0 @@
-﻿  Game.cpp
-C:\Users\Micha\Desktop\OnlineGameTechLabs\Project1\Project1\Project1\src\Game.cpp(100,10): warning C4477: 'scanf_s' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'Uint8 *'
-C:\Users\Micha\Desktop\OnlineGameTechLabs\Project1\Project1\Project1\src\Game.cpp(100,10): message : consider using '%hhd' in the format string
-C:\Users\Micha\Desktop\OnlineGameTechLabs\Project1\Project1\Project1\src\Game.cpp(104,51): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  main.cpp
-  Generating Code...
-  Project1.vcxproj -> C:\Users\Micha\Desktop\OnlineGameTechLabs\Project1\Project1\x64\Debug\Project1-client.exe
