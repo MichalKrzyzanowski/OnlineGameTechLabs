@@ -12,8 +12,11 @@ bool Client::ProcessPacketType(PacketType packetType)
 		if (!GetString(m_message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
 		//std::cout << m_message << std::endl; //Display the message to the user
-		const char* message = m_message.c_str();
-		m_id = message[0] - '0';
+		if (m_id == -1)
+		{
+			const char* message = m_message.c_str();
+			m_id = message[0] - '0';
+		}
 		break;
 	}
 	case PacketType::FileTransferByteBuffer:
@@ -48,7 +51,7 @@ bool Client::ProcessPacketType(PacketType packetType)
 	return true;
 }
 
-void Client::ClientThread(Client & client)
+void Client::ClientThread(Client& client)
 {
 	PacketType PacketType;
 	while (true)
@@ -72,7 +75,7 @@ void Client::ClientThread(Client & client)
 	}
 }
 
-bool Client::RequestFile(const std::string & fileName)
+bool Client::RequestFile(const std::string& fileName)
 {
 	if (m_file.m_transferInProgress)
 	{
@@ -97,7 +100,7 @@ bool Client::RequestFile(const std::string & fileName)
 	return true;
 }
 
-void Client::PacketSenderThread(Client & client) //Thread for all outgoing packets
+void Client::PacketSenderThread(Client& client) //Thread for all outgoing packets
 {
 	while (true)
 	{

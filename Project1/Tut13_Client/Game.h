@@ -29,6 +29,7 @@ public:
 	~Game();
 	void run();
 	std::vector<std::string> splitString(const std::string& s, char delimiter);
+	void updateClientShapes();
 };
 
 #include "Client.h"

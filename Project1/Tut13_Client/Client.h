@@ -15,7 +15,7 @@ public: //Public functions
 	~Client();
 
 	std::string m_message;
-	int m_id;
+	int m_id{ -1 };
 
 private: //Private functions
 	bool CloseConnection();

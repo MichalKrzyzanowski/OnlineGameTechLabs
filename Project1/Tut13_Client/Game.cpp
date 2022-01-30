@@ -40,33 +40,7 @@ void Game::run()
 
 void Game::update()
 {
-	printf("%d\n", m_client->m_id);
-
-	std::string positionData = std::to_string(m_shapes[m_client->m_id].x) +
-		"," + std::to_string(m_shapes[m_client->m_id].y);
-
-	m_client->SendString(positionData); //Send string to server
-
-	std::vector<std::string> data = splitString(m_client->m_message, ',');
-
-	if (data.size() == 3)
-	{
-		if (atoi(data[0].c_str()) == 0)
-		{
-			m_shapes[0].x = atoi(data[1].c_str());
-			m_shapes[0].y = atoi(data[2].c_str());
-		}
-		else if (atoi(data[0].c_str()) == 1)
-		{
-			m_shapes[1].x = atoi(data[1].c_str());
-			m_shapes[1].y = atoi(data[2].c_str());
-		}
-		else if (atoi(data[0].c_str()) == 2)
-		{
-			m_shapes[2].x = atoi(data[1].c_str());
-			m_shapes[2].y = atoi(data[2].c_str());
-		}
-	}
+	updateClientShapes();
 }
 
 void Game::processEvents(SDL_Event e)
@@ -78,29 +52,32 @@ void Game::processEvents(SDL_Event e)
 			m_gameIsRunning = false;
 		}
 
-		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+		if (m_client->m_id != -1)
 		{
-			m_gameIsRunning = false;
-		}
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+			{
+				m_gameIsRunning = false;
+			}
 
-		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w)
-		{
-			m_shapes[0].y -= m_speed;
-		}
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w)
+			{
+				m_shapes[m_client->m_id].y -= m_speed;
+			}
 
-		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s)
-		{
-			m_shapes[0].y += m_speed;
-		}
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s)
+			{
+				m_shapes[m_client->m_id].y += m_speed;
+			}
 
-		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a)
-		{
-			m_shapes[0].x -= m_speed;
-		}
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a)
+			{
+				m_shapes[m_client->m_id].x -= m_speed;
+			}
 
-		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d)
-		{
-			m_shapes[0].x += m_speed;
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d)
+			{
+				m_shapes[m_client->m_id].x += m_speed;
+			}
 		}
 	}
 }
@@ -110,12 +87,13 @@ void Game::render(SDL_Renderer* renderer)
 	SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(m_renderer);
 
-	SDL_SetRenderDrawColor(m_renderer, 0xFF, 0x00, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(m_renderer, 0xFF, 0x00, 0x00, 0xFF);
 
-	for (auto const& shape : m_shapes)
-	{
-		SDL_RenderDrawRect(m_renderer, &shape);
-	}
+		SDL_RenderFillRect(m_renderer, &m_shapes[0]);
+
+		SDL_SetRenderDrawColor(m_renderer, 0x00, 0xFF, 0x00, 0xFF);
+
+		SDL_RenderFillRect(m_renderer, &m_shapes[1]);
 
 	SDL_RenderPresent(m_renderer);
 }
@@ -130,4 +108,36 @@ std::vector<std::string> Game::splitString(const std::string& s, char delimiter)
 		splits.push_back(split);
 	}
 	return splits;
+}
+
+void Game::updateClientShapes()
+{
+	if (m_client->m_id != -1 && m_client->m_id < 2)
+	{
+		std::string positionData = std::to_string(m_shapes[m_client->m_id].x) +
+			"," + std::to_string(m_shapes[m_client->m_id].y);
+
+		m_client->SendString(positionData); //Send string to server
+
+		std::vector<std::string> data = splitString(m_client->m_message, ',');
+
+
+		if (data.size() == 3)
+		{
+			if (atoi(data[0].c_str()) == 0)
+			{
+				m_shapes[1].x = atoi(data[1].c_str());
+				m_shapes[1].y = atoi(data[2].c_str());
+			}
+			else if (atoi(data[0].c_str()) == 1)
+			{
+				m_shapes[0].x = atoi(data[1].c_str());
+				m_shapes[0].y = atoi(data[2].c_str());
+			}
+		}
+	}
+	else
+	{
+		m_client->SendString("test"); //Send string to server
+	}
 }
