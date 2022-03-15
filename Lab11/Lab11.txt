@@ -1,0 +1,13 @@
+Q.1
+---
+
+EPu(B)(M)
+
+Symmetric key cryptography uses less resources and the lenght of the keys are much shorter. Symmetric key cryptography also uses only one key rather than a public & private key pair.
+
+Q.2
+---
+
+EPr(A)(M)
+
+Alice should send a hash, encrypted with her private and send it over to bob.
