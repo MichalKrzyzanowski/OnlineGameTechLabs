@@ -1,0 +1,36 @@
+Q.1
+---
+
+client/server
+-------------
++ Centralized data repo. Easier to maintain, more accountability,
+better security.
++ Can control and record transactions by clients.
++ One server can work with wider variety of client capabilities.
++ Well-known port numbers.
+- Centralized & less robust. Efficiency & reliability depond on server.
+- popular data = more congestion, slower.
+
+
+peer to peer
+------------
++ Decentrilized & more robust. No single point of failure.
++ Popular data = more distribution, faster.
+- Decentralized data. More redundancy, harder to maintain,
+less accountability, less stability.
+- Transactions are not recorded, harder to trace.
+- Peers need to be farily compatible.
+- Peers need to find each other, no well-known ports.
+
+Q.2
+---
+
+Host A is the authorative host. Host B connects to host A. Host C connects to
+host A too. Host A knows the data (ip address, port numbers) of the hosts that
+are connected to host A (host B & host C). Host A gives the data of host B to
+host C and vice versa so that the two hosts can connect using eachother.
+
+Q.3
+---
+UDP hole-punching is a technique that allows a packet to be sent from an
+outside system by punching a hole in the firewall of the network.
