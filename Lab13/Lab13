@@ -1,0 +1,73 @@
+Q.1
+---
+
+
+Q.2
+---
+
+Sender transmits complete state snapshot. Folowing messages only contain changes
+made to the snapshot. e.g Delta Lambda
+
+Q.3
+---
+Input phrase: BABAABAAA
+
+Basic Dict:
+A = 65
+B = 66
+C = 67
+D = 68
+BA = 69
+AB = 70
+BAA = 71
+ABA = 72
+AA = 73
+
+BABAABAAA
+-
+
+S = B - in dict
+S = BA - not in dict
+Code = 66
+add BA to dict
+
+BABAABAAA
+ -
+
+S = A - in dict
+S = AB - not in dict
+Code = 6665
+add AB to dict
+
+BABAABAAA
+  --
+
+S = B - in dict
+S = BA - in dict
+S = BAA - not in dict
+Code = 666569
+add BAA to dict
+
+BABAABAAA
+    --
+
+S = A - in dict
+S = AB - in dict
+S = ABA - not in dict
+Code = 66656970
+add ABA to dict
+
+BABAABAAA
+      -
+
+S = A - in dict
+S = AA - not in dict
+Code = 6665697065
+add AA to dict
+
+BABAABAAA
+       --
+
+S = A - in dict
+S = AA in dict
+code = 666569706573
