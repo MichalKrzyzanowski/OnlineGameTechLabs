@@ -1,0 +1,30 @@
+Q.1
+---
+No due to several factors:
+- Transmission delay. The amount of time required to push all packet's
+bits into the wire.
+- propagation delays due to speed of communications link and light delays.
+- queuing and processing at routers, source, & destnation nodes.
+- transcoding delays due to data manipulation algorithms such as compression.
+
+Q.2
+---
+Latency is directly related to consistency, if two players are playing an 
+shooting game, a player with low latency will miss alot of his shots on 
+a player with high latency. Two players with similar latency levels will
+not experience such inconsistency.
+
+Q.3
+---
+dumb client: conservative
+client-side prediction: optimistic
+
+dumb client: Client sends input to the server, the server calculates the 
+state and sends it to the client, client just renders the state to it
+from the server
+
+client-side prediction: sends out inputs to the server, also applies
+them immediately locally to update your own state. server can override
+player input if simulation on server side has a constraint player does not
+know about yet. when you recieve the update from the server, check if it
+differs from local state. if different, correct local state.
