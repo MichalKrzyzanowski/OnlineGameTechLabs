@@ -1,0 +1,18 @@
+Q.1
+---
+
+- stack buffer overruns: Designed to force the application to execute code
+injected by an attacker. when a function is called, the return address of 
+the original calling function is saved to the stack. stack buffer overrun 
+changes teh return address to point to malicious code. can be prevented by
+safe coding practices and a stack guard.
+
+- packet sniffer: used to read the data being recieved in each packet.
+can then be interpreted by another program showing the state of the game
+world. wireshark is an example of a packet sniffer. this can be countered by
+encrypting data transmitted along the wire.
+
+Q.2
+---
+
+A potentially visible set could a bordering Area of interest.
